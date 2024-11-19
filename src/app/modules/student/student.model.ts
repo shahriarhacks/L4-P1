@@ -123,3 +123,5 @@ const studentSchema = new Schema<IStudent>(
       timestamps: true,
    },
 );
+
+export const Student = model<IStudent>("Student", studentSchema);
