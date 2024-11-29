@@ -1,9 +1,8 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
-import { StudentRouter } from "./app/modules/student/student.routes";
-import { UserRouter } from "./app/modules/user/user.routes";
 import globalErrorHandler from "./app/middleware/globalErrorHandler";
 import { notFoundRouteHandler } from "./app/middleware/notFoundRouteHandler";
+import router from "./app/routes";
 
 const app: Application = express();
 
@@ -17,12 +16,19 @@ app.use(express.text());
 app.use(cors());
 
 // Application routes
+app.use("/api/v1", router);
 
-app.use("/api/v1/users", UserRouter);
-
+// Default route
 app.get("/", (_req: Request, res: Response) => {
-   const x = 9;
-   res.send(x);
+   res.status(200).json({
+      success: true,
+      message: "Welcome to the API World!",
+   });
+});
+
+// Health checkup route
+app.get("/health", (_req: Request, res: Response) => {
+   res.status(200).json({ status: "UP" });
 });
 
 // Global Error Handler
