@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
-import { StudentRouter } from "./app/modules/student/student.route";
+import { StudentRouter } from "./app/modules/student/student.routes";
+import { UserRouter } from "./app/modules/user/user.routes";
 
 const app: Application = express();
 
@@ -15,7 +16,7 @@ app.use(cors());
 
 // Application routes
 
-app.use("/api/v1/students", StudentRouter);
+app.use("/api/v1/users", UserRouter);
 
 app.get("/", (_req: Request, res: Response) => {
    const x = 9;

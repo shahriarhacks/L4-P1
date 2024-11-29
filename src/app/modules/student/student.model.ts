@@ -68,14 +68,27 @@ const localGuardianSchema = new Schema<ILocalGuardian>({
 
 const studentSchema = new Schema<IStudent>(
    {
-      id: {
+      uid: {
          type: String,
          required: true,
+         unique: true,
       },
-      name: userNameSchema,
+      user: {
+         type: Schema.Types.ObjectId,
+         ref: "User",
+         required: true,
+         unique: true,
+      },
+      name: {
+         type: userNameSchema,
+         required: true,
+      },
       gender: {
          type: String,
-         enum: ["male", "female"],
+         enum: {
+            values: ["male", "female", "other"],
+            message: "{VALUE} is not a valid gender",
+         },
          required: true,
       },
       dateOfBirth: {
@@ -98,7 +111,10 @@ const studentSchema = new Schema<IStudent>(
       },
       bloodGroup: {
          type: String,
-         enum: bloodGroup,
+         enum: {
+            values: bloodGroup,
+            message: "{VALUE} is not a valid blood group",
+         },
       },
       presentAddress: {
          type: String,
@@ -108,20 +124,42 @@ const studentSchema = new Schema<IStudent>(
          type: String,
          required: true,
       },
-      guardian: guardianSchema,
-      localGuardian: localGuardianSchema,
+      guardian: {
+         type: guardianSchema,
+         required: true,
+      },
+      localGuardian: {
+         type: localGuardianSchema,
+         required: true,
+      },
       profileImg: {
          type: String,
       },
-      isActive: {
-         type: String,
-         enum: ["active", "blocked"],
-         default: "active",
+      isDeleted: {
+         type: Boolean,
+         required: true,
+         default: false,
       },
    },
    {
       timestamps: true,
    },
 );
+
+// Query Middleware
+studentSchema.pre("find", function (next) {
+   this.find({ isDeleted: { $ne: true } });
+   next();
+});
+
+studentSchema.pre("findOne", function (next) {
+   this.find({ isDeleted: { $ne: true } });
+   next();
+});
+
+studentSchema.pre("aggregate", function (next) {
+   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+   next();
+});
 
 export const Student = model<IStudent>("Student", studentSchema);

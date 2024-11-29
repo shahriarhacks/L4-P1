@@ -1,3 +1,6 @@
+import { Types } from "mongoose";
+import { IUser } from "../user/user.interface";
+
 export interface IUserName {
    firstName: string;
    middleName?: string;
@@ -21,9 +24,10 @@ export interface ILocalGuardian {
 }
 
 export interface IStudent {
-   id: string;
+   uid: string;
+   user: Types.ObjectId | IUser;
    name: IUserName;
-   gender: "male" | "female";
+   gender: "male" | "female" | "other";
    dateOfBirth?: string;
    email: string;
    contactNo: string;
@@ -34,5 +38,5 @@ export interface IStudent {
    guardian: IGuardian;
    localGuardian: ILocalGuardian;
    profileImg?: string;
-   isActive: "active" | "blocked";
+   isDeleted: boolean;
 }
