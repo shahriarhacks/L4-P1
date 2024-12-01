@@ -61,57 +61,61 @@ const createLocalGuardianSchema = z.object({
 });
 
 const createStudentSchema = z.object({
-   uid: z.string({
-      required_error: "UID is required",
-      invalid_type_error: "UID must be a string",
+   body: z.object({
+      uid: z.string({
+         required_error: "UID is required",
+         invalid_type_error: "UID must be a string",
+      }),
+      user: z.string({
+         required_error: "User is required",
+         invalid_type_error: "User must be a string",
+      }),
+      name: createUserNameSchema,
+      gender: z.enum(["male", "female", "other"], {
+         required_error: "Gender is required",
+         invalid_type_error:
+            "Gender must be one of 'male', 'female', or 'other'",
+      }),
+      dateOfBirth: z
+         .string({ invalid_type_error: "Date of birth must be a string" })
+         .optional(),
+      email: z
+         .string({
+            required_error: "Email is required",
+            invalid_type_error: "Email must be a string",
+         })
+         .email("Invalid email format"),
+      contactNo: z.string({
+         required_error: "Contact number is required",
+         invalid_type_error: "Contact number must be a string",
+      }),
+      emergencyContactNo: z.string({
+         required_error: "Emergency contact number is required",
+         invalid_type_error: "Emergency contact number must be a string",
+      }),
+      bloodGroup: z
+         .enum(bloodGroup, {
+            invalid_type_error:
+               "Blood group must be one of the predefined values",
+         })
+         .optional(),
+      presentAddress: z.string({
+         required_error: "Present address is required",
+         invalid_type_error: "Present address must be a string",
+      }),
+      permanentAddress: z.string({
+         required_error: "Permanent address is required",
+         invalid_type_error: "Permanent address must be a string",
+      }),
+      guardian: createGuardianSchema,
+      localGuardian: createLocalGuardianSchema,
+      profileImg: z
+         .string({ invalid_type_error: "Profile image must be a string" })
+         .optional(),
+      isDeleted: z
+         .boolean({ invalid_type_error: "IsDeleted must be a boolean" })
+         .default(false),
    }),
-   user: z.string({
-      required_error: "User is required",
-      invalid_type_error: "User must be a string",
-   }),
-   name: createUserNameSchema,
-   gender: z.enum(["male", "female", "other"], {
-      required_error: "Gender is required",
-      invalid_type_error: "Gender must be one of 'male', 'female', or 'other'",
-   }),
-   dateOfBirth: z
-      .string({ invalid_type_error: "Date of birth must be a string" })
-      .optional(),
-   email: z
-      .string({
-         required_error: "Email is required",
-         invalid_type_error: "Email must be a string",
-      })
-      .email("Invalid email format"),
-   contactNo: z.string({
-      required_error: "Contact number is required",
-      invalid_type_error: "Contact number must be a string",
-   }),
-   emergencyContactNo: z.string({
-      required_error: "Emergency contact number is required",
-      invalid_type_error: "Emergency contact number must be a string",
-   }),
-   bloodGroup: z
-      .enum(bloodGroup, {
-         invalid_type_error: "Blood group must be one of the predefined values",
-      })
-      .optional(),
-   presentAddress: z.string({
-      required_error: "Present address is required",
-      invalid_type_error: "Present address must be a string",
-   }),
-   permanentAddress: z.string({
-      required_error: "Permanent address is required",
-      invalid_type_error: "Permanent address must be a string",
-   }),
-   guardian: createGuardianSchema,
-   localGuardian: createLocalGuardianSchema,
-   profileImg: z
-      .string({ invalid_type_error: "Profile image must be a string" })
-      .optional(),
-   isDeleted: z
-      .boolean({ invalid_type_error: "IsDeleted must be a boolean" })
-      .default(false),
 });
 
 export const studentValidator = { createStudentSchema };

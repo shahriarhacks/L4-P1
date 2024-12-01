@@ -5,12 +5,15 @@ const requestValidator =
    (schema: AnyZodObject) =>
    async (req: Request, _res: Response, next: NextFunction) => {
       try {
+         // validation check
+         //if everything alright next() ->
          await schema.parseAsync({
             body: req.body,
          });
+
          next();
-      } catch (error) {
-         next(error);
+      } catch (err) {
+         next(err);
       }
    };
 

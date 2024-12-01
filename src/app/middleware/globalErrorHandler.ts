@@ -1,15 +1,20 @@
-import { ErrorRequestHandler } from "express";
-import { environment } from "../../config/environment";
+import { NextFunction, Request, Response } from "express";
 
-const globalErrorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
-   error.statusCode = error.statusCode || 500;
-   error.message = error.message || "Internal Server Error";
+const globalErrorHandler = (
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   err: any,
+   _req: Request,
+   res: Response,
+   _next: NextFunction,
+) => {
+   const statusCode = 500;
+   const message = err.message || "Something went wrong!";
 
-   res.status(error.statusCode).json({
+   return res.status(statusCode).json({
       success: false,
-      message: error.message,
-      error: environment.env === "development" ? error.errors : null,
-      stack: environment.env === "development" ? error.stack : null,
+      message,
+      error: err,
    });
 };
+
 export default globalErrorHandler;
