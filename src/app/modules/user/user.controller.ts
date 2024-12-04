@@ -5,7 +5,7 @@ import asyncHandler from "../../utils/asyncHandler";
 
 const createStudent = asyncHandler(async (req, res) => {
    const { password, ...student } = req.body;
-   const result = await UserService.createStudent(password, student);
+   const result = await UserService.createStudentIntoDB(password, student);
 
    responder<IStudent | undefined>(res, {
       statuscode: 201,

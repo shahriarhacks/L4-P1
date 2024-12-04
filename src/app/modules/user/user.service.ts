@@ -4,7 +4,7 @@ import { Student } from "../student/student.model";
 import { IUser } from "./user.interface";
 import { User } from "./user.model";
 
-const createStudent = async (password: string, student: IStudent) => {
+const createStudentIntoDB = async (password: string, student: IStudent) => {
    const userData: Partial<IUser> = {};
 
    userData.uid = "20300100002";
@@ -22,4 +22,4 @@ const createStudent = async (password: string, student: IStudent) => {
    return undefined;
 };
 
-export const UserService = { createStudent };
+export const UserService = { createStudentIntoDB };
