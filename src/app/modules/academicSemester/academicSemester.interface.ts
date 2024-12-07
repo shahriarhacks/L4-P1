@@ -22,3 +22,7 @@ export interface IAcademicSemester {
    startMonth: TMonths;
    endMonth: TMonths;
 }
+
+export type TAcademicSemesterCodeMapper = {
+   [K in TSemesterName]: TSemesterCode;
+};
