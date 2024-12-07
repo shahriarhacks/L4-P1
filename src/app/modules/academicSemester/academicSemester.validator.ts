@@ -17,6 +17,21 @@ const createSchema = z.object({
    }),
 });
 
+const updateSchema = z.object({
+   body: z.object({
+      name: z.enum(SemesterNames as [string, ...string[]]).optional(),
+      year: z
+         .string({
+            required_error: "Year is required",
+         })
+         .optional(),
+      code: z.enum(SemesterCodes as [string, ...string[]]).optional(),
+      startMonth: z.enum(Months as [string, ...string[]]).optional(),
+      endMonth: z.enum(Months as [string, ...string[]]).optional(),
+   }),
+});
+
 export const AcademicSemesterValidator = {
    createSchema,
+   updateSchema,
 };

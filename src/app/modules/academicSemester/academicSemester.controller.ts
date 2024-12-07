@@ -25,7 +25,7 @@ const getSingleStudent = asyncHandler(async (req, res) => {
    });
 });
 
-const getAllAcademicSemesters = asyncHandler(async (req, res) => {
+const getAllAcademicSemesters = asyncHandler(async (_req, res) => {
    const result = await AcademicSemesterService.getAllAcademicSemestersFromDB();
    responder(res, {
       statuscode: 200,
@@ -34,8 +34,22 @@ const getAllAcademicSemesters = asyncHandler(async (req, res) => {
    });
 });
 
+const updateAcademicSemester = asyncHandler(async (req, res) => {
+   const result = await AcademicSemesterService.updateAcademicSemesterIntoDB(
+      req.params.id,
+      req.body,
+   );
+   responder(res, {
+      statuscode: 201,
+      success: true,
+      message: "Academic Semester updated successfully",
+      data: result,
+   });
+});
+
 export const AcademicSemesterController = {
    createAcademicSemester,
    getSingleStudent,
    getAllAcademicSemesters,
+   updateAcademicSemester,
 };
