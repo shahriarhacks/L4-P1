@@ -13,4 +13,22 @@ const createAcademicSemesterIntoDB = async (
    return result;
 };
 
-export const AcademicSemesterService = { createAcademicSemesterIntoDB };
+const getAllAcademicSemestersFromDB = async (): Promise<
+   IAcademicSemester[]
+> => {
+   const result = await AcademicSemester.find();
+   return result;
+};
+
+const getSingleAcademicSemesterFromDB = async (
+   id: string,
+): Promise<IAcademicSemester | null> => {
+   const result = await AcademicSemester.findById(id);
+   return result;
+};
+
+export const AcademicSemesterService = {
+   createAcademicSemesterIntoDB,
+   getSingleAcademicSemesterFromDB,
+   getAllAcademicSemestersFromDB,
+};

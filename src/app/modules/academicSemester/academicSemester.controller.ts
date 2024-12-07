@@ -14,4 +14,28 @@ const createAcademicSemester = asyncHandler(async (req, res) => {
    });
 });
 
-export const AcademicSemesterController = { createAcademicSemester };
+const getSingleStudent = asyncHandler(async (req, res) => {
+   const result = await AcademicSemesterService.getSingleAcademicSemesterFromDB(
+      req.params.id,
+   );
+   responder(res, {
+      statuscode: 200,
+      success: true,
+      data: result,
+   });
+});
+
+const getAllAcademicSemesters = asyncHandler(async (req, res) => {
+   const result = await AcademicSemesterService.getAllAcademicSemestersFromDB();
+   responder(res, {
+      statuscode: 200,
+      success: true,
+      data: result,
+   });
+});
+
+export const AcademicSemesterController = {
+   createAcademicSemester,
+   getSingleStudent,
+   getAllAcademicSemesters,
+};

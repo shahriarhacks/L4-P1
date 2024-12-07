@@ -62,14 +62,6 @@ const createLocalGuardianSchema = z.object({
 
 const createStudentSchema = z.object({
    body: z.object({
-      uid: z.string({
-         required_error: "UID is required",
-         invalid_type_error: "UID must be a string",
-      }),
-      user: z.string({
-         required_error: "User is required",
-         invalid_type_error: "User must be a string",
-      }),
       name: createUserNameSchema,
       gender: z.enum(["male", "female", "other"], {
          required_error: "Gender is required",
@@ -112,6 +104,10 @@ const createStudentSchema = z.object({
       profileImg: z
          .string({ invalid_type_error: "Profile image must be a string" })
          .optional(),
+      admissionSemester: z.string({
+         required_error: "Admission semester is required",
+         invalid_type_error: "Admission semester must be a string",
+      }),
       isDeleted: z
          .boolean({ invalid_type_error: "IsDeleted must be a boolean" })
          .default(false),
