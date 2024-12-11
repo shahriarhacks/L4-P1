@@ -7,7 +7,7 @@ const router = Router();
 
 router.post(
    "/create-student",
-   requestValidator(studentValidator.createStudentSchema),
+   requestValidator(studentValidator.createStudentValidationSchema),
    UserController.createStudent,
 );
 

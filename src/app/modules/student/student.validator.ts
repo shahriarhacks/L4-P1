@@ -1,117 +1,101 @@
 import { z } from "zod";
 
-const bloodGroup = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"] as const;
-
-const createUserNameSchema = z.object({
-   firstName: z.string({
-      required_error: "First name is required",
-      invalid_type_error: "First name must be a string",
-   }),
-   middleName: z.string().optional(),
-   lastName: z.string({
-      required_error: "Last name is required",
-      invalid_type_error: "Last name must be a string",
-   }),
+const createUserNameValidationSchema = z.object({
+   firstName: z
+      .string()
+      .min(1)
+      .max(20)
+      .refine((value) => /^[A-Z]/.test(value), {
+         message: "First Name must start with a capital letter",
+      }),
+   middleName: z.string(),
+   lastName: z.string(),
 });
 
-const createGuardianSchema = z.object({
-   fatherName: z.string({
-      required_error: "Father's name is required",
-      invalid_type_error: "Father's name must be a string",
-   }),
-   fatherOccupation: z.string({
-      required_error: "Father's occupation is required",
-      invalid_type_error: "Father's occupation must be a string",
-   }),
-   fatherContactNo: z.string({
-      required_error: "Father's contact number is required",
-      invalid_type_error: "Father's contact number must be a string",
-   }),
-   motherName: z.string({
-      required_error: "Mother's name is required",
-      invalid_type_error: "Mother's name must be a string",
-   }),
-   motherOccupation: z.string({
-      required_error: "Mother's occupation is required",
-      invalid_type_error: "Mother's occupation must be a string",
-   }),
-   motherContactNo: z.string({
-      required_error: "Mother's contact number is required",
-      invalid_type_error: "Mother's contact number must be a string",
-   }),
+const createGuardianValidationSchema = z.object({
+   fatherName: z.string(),
+   fatherOccupation: z.string(),
+   fatherContactNo: z.string(),
+   motherName: z.string(),
+   motherOccupation: z.string(),
+   motherContactNo: z.string(),
 });
 
-const createLocalGuardianSchema = z.object({
-   name: z.string({
-      required_error: "Local guardian's name is required",
-      invalid_type_error: "Local guardian's name must be a string",
-   }),
-   occupation: z.string({
-      required_error: "Local guardian's occupation is required",
-      invalid_type_error: "Local guardian's occupation must be a string",
-   }),
-   contactNo: z.string({
-      required_error: "Local guardian's contact number is required",
-      invalid_type_error: "Local guardian's contact number must be a string",
-   }),
-   address: z.string({
-      required_error: "Local guardian's address is required",
-      invalid_type_error: "Local guardian's address must be a string",
-   }),
+const createLocalGuardianValidationSchema = z.object({
+   name: z.string(),
+   occupation: z.string(),
+   contactNo: z.string(),
+   address: z.string(),
 });
 
-const createStudentSchema = z.object({
+export const createStudentValidationSchema = z.object({
    body: z.object({
-      name: createUserNameSchema,
-      gender: z.enum(["male", "female", "other"], {
-         required_error: "Gender is required",
-         invalid_type_error:
-            "Gender must be one of 'male', 'female', or 'other'",
+      password: z.string().max(20),
+      student: z.object({
+         name: createUserNameValidationSchema,
+         gender: z.enum(["male", "female", "other"]),
+         dateOfBirth: z.string().optional(),
+         email: z.string().email(),
+         contactNo: z.string(),
+         emergencyContactNo: z.string(),
+         bloodGroup: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]),
+         presentAddress: z.string(),
+         permanentAddress: z.string(),
+         guardian: createGuardianValidationSchema,
+         localGuardian: createLocalGuardianValidationSchema,
+         admissionSemester: z.string(),
+         profileImg: z.string(),
+         academicDepartment: z.string(),
       }),
-      dateOfBirth: z
-         .string({ invalid_type_error: "Date of birth must be a string" })
-         .optional(),
-      email: z
-         .string({
-            required_error: "Email is required",
-            invalid_type_error: "Email must be a string",
-         })
-         .email("Invalid email format"),
-      contactNo: z.string({
-         required_error: "Contact number is required",
-         invalid_type_error: "Contact number must be a string",
-      }),
-      emergencyContactNo: z.string({
-         required_error: "Emergency contact number is required",
-         invalid_type_error: "Emergency contact number must be a string",
-      }),
-      bloodGroup: z
-         .enum(bloodGroup, {
-            invalid_type_error:
-               "Blood group must be one of the predefined values",
-         })
-         .optional(),
-      presentAddress: z.string({
-         required_error: "Present address is required",
-         invalid_type_error: "Present address must be a string",
-      }),
-      permanentAddress: z.string({
-         required_error: "Permanent address is required",
-         invalid_type_error: "Permanent address must be a string",
-      }),
-      guardian: createGuardianSchema,
-      localGuardian: createLocalGuardianSchema,
-      profileImg: z
-         .string({ invalid_type_error: "Profile image must be a string" })
-         .optional(),
-      admissionSemester: z.string({
-         required_error: "Admission semester is required",
-         invalid_type_error: "Admission semester must be a string",
-      }),
-      isDeleted: z
-         .boolean({ invalid_type_error: "IsDeleted must be a boolean" })
-         .default(false),
    }),
 });
 
-export const studentValidator = { createStudentSchema };
+const updateUserNameValidationSchema = z.object({
+   firstName: z.string().min(1).max(20).optional(),
+   middleName: z.string().optional(),
+   lastName: z.string().optional(),
+});
+
+const updateGuardianValidationSchema = z.object({
+   fatherName: z.string().optional(),
+   fatherOccupation: z.string().optional(),
+   fatherContactNo: z.string().optional(),
+   motherName: z.string().optional(),
+   motherOccupation: z.string().optional(),
+   motherContactNo: z.string().optional(),
+});
+
+const updateLocalGuardianValidationSchema = z.object({
+   name: z.string().optional(),
+   occupation: z.string().optional(),
+   contactNo: z.string().optional(),
+   address: z.string().optional(),
+});
+
+export const updateStudentValidationSchema = z.object({
+   body: z.object({
+      student: z.object({
+         name: updateUserNameValidationSchema,
+         gender: z.enum(["male", "female", "other"]).optional(),
+         dateOfBirth: z.string().optional(),
+         email: z.string().email().optional(),
+         contactNo: z.string().optional(),
+         emergencyContactNo: z.string().optional(),
+         bloodGroup: z
+            .enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])
+            .optional(),
+         presentAddress: z.string().optional(),
+         permanentAddress: z.string().optional(),
+         guardian: updateGuardianValidationSchema.optional(),
+         localGuardian: updateLocalGuardianValidationSchema.optional(),
+         admissionSemester: z.string().optional(),
+         profileImg: z.string().optional(),
+         academicDepartment: z.string().optional(),
+      }),
+   }),
+});
+
+export const studentValidator = {
+   createStudentValidationSchema,
+   updateStudentValidationSchema,
+};
