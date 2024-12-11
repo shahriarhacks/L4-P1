@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 import { IUser } from "../user/user.interface";
 import { IAcademicSemester } from "../academicSemester/academicSemester.interface";
+import { IAcademicDepartment } from "../academicDepartment/academicDepartment.interface";
 
 export interface IUserName {
    firstName: string;
@@ -40,5 +41,6 @@ export interface IStudent {
    localGuardian: ILocalGuardian;
    profileImg?: string;
    admissionSemester: Types.ObjectId | IAcademicSemester;
+   academicDepartment: Types.ObjectId | IAcademicDepartment;
    isDeleted: boolean;
 }
