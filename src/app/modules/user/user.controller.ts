@@ -8,7 +8,7 @@ const createStudent = asyncHandler(async (req, res) => {
    const result = await UserService.createStudentIntoDB(password, student);
 
    responder<IStudent | undefined>(res, {
-      statuscode: 201,
+      statusCode: 201,
       success: true,
       message: "Student created successfully",
       data: result,
