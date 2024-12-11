@@ -5,6 +5,7 @@ import {
    SemesterCodes,
    SemesterNames,
 } from "./academicSemester.constant";
+import ApplicationError from "../../errors/applicationError";
 
 const academicSemesterSchema = new Schema<IAcademicSemester>(
    {
@@ -45,7 +46,7 @@ academicSemesterSchema.pre("save", async function (next) {
    });
 
    if (isExist) {
-      throw new Error("Academic Semester already exist");
+      throw new ApplicationError(409, "Academic Semester already exist");
    }
    next();
 });
