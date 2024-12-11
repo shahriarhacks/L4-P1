@@ -8,21 +8,52 @@ const createUserNameValidationSchema = z.object({
       .refine((value) => /^[A-Z]/.test(value), {
          message: "First Name must start with a capital letter",
       }),
-   middleName: z.string(),
-   lastName: z.string(),
+   middleName: z
+      .string()
+      .min(1)
+      .max(20)
+      .refine((value) => /^[A-Z]/.test(value), {
+         message: "Last Name must start with a capital letter",
+      })
+      .optional(),
+   lastName: z
+      .string()
+      .min(1)
+      .max(20)
+      .refine((value) => /^[A-Z]/.test(value), {
+         message: "Last Name must start with a capital letter",
+      }),
 });
 
 const createGuardianValidationSchema = z.object({
-   fatherName: z.string(),
+   fatherName: z
+      .string()
+      .min(1)
+      .max(20)
+      .refine((value) => /^[A-Z]/.test(value), {
+         message: "Last Name must start with a capital letter",
+      }),
    fatherOccupation: z.string(),
    fatherContactNo: z.string(),
-   motherName: z.string(),
+   motherName: z
+      .string()
+      .min(1)
+      .max(20)
+      .refine((value) => /^[A-Z]/.test(value), {
+         message: "Last Name must start with a capital letter",
+      }),
    motherOccupation: z.string(),
    motherContactNo: z.string(),
 });
 
 const createLocalGuardianValidationSchema = z.object({
-   name: z.string(),
+   name: z
+      .string()
+      .min(1)
+      .max(20)
+      .refine((value) => /^[A-Z]/.test(value), {
+         message: "Last Name must start with a capital letter",
+      }),
    occupation: z.string(),
    contactNo: z.string(),
    address: z.string(),
