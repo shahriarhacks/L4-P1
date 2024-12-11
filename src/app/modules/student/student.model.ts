@@ -5,6 +5,7 @@ import {
    IStudent,
    IUserName,
 } from "./student.interface";
+import ApplicationError from "../../errors/applicationError";
 
 const bloodGroup = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -169,6 +170,15 @@ studentSchema.pre("findOne", function (next) {
 
 studentSchema.pre("aggregate", function (next) {
    this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+   next();
+});
+
+studentSchema.pre("findOneAndUpdate", function (next) {
+   const query = this.getQuery();
+   const isStudentExist = Student.findOne(query);
+   if (!isStudentExist) {
+      throw new ApplicationError(404, "Student not found");
+   }
    next();
 });
 
