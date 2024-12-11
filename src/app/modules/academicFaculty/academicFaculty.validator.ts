@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const createSchema = z.object({
+const validatorSchema = z.object({
    body: z.object({
       name: z
          .string({ required_error: "Name is required" })
@@ -8,4 +8,4 @@ const createSchema = z.object({
    }),
 });
 
-export const AcademicFacultyValidator = { createSchema };
+export const AcademicFacultyValidator = { validatorSchema };
