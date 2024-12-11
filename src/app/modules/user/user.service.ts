@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { environment } from "../../../config/environment";
 import { AcademicSemester } from "../academicSemester/academicSemester.model";
 import { IStudent } from "../student/student.interface";
@@ -16,19 +17,36 @@ const createStudentIntoDB = async (password: string, payload: IStudent) => {
       throw new Error("Invalid Admission semester!");
    }
 
-   userData.uid = await generateStudentId(admissionSemester);
-   userData.password = password || (environment.student_def_pass as string);
-   userData.role = "student";
+   const session = await mongoose.startSession();
 
-   const user = await User.create(userData);
-   if (Object.keys(user).length) {
-      payload.user = user._id;
-      payload.uid = user.uid;
+   try {
+      await session.startTransaction();
+      userData.uid = await generateStudentId(admissionSemester);
+      userData.password = password || (environment.student_def_pass as string);
+      userData.role = "student";
 
-      const createdStudent = await Student.create(payload);
-      return createdStudent;
+      const user = await User.create([userData], { session });
+      if (!user.length) {
+         throw new Error("User not created, Something went wrong!");
+      }
+      payload.user = user[0]._id;
+      payload.uid = user[0].uid;
+
+      const createdStudent = await Student.create([payload], { session });
+      if (!createdStudent.length) {
+         throw new Error("Student not created, Something went wrong!");
+      }
+
+      await session.commitTransaction();
+
+      return createdStudent[0];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   } catch (error: any) {
+      await session.abortTransaction();
+      throw new Error(error.message);
+   } finally {
+      await session.endSession();
    }
-   return undefined;
 };
 
 export const UserService = { createStudentIntoDB };
