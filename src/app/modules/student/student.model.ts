@@ -173,9 +173,12 @@ studentSchema.pre("aggregate", function (next) {
    next();
 });
 
-studentSchema.pre("findOneAndUpdate", function (next) {
+studentSchema.pre("findOneAndUpdate", async function (next) {
    const query = this.getQuery();
-   const isStudentExist = Student.findOne(query);
+   const isStudentExist = await Student.findOne({
+      ...query,
+      isDeleted: { $ne: true },
+   });
    if (!isStudentExist) {
       throw new ApplicationError(404, "Student not found");
    }

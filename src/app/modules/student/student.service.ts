@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import ApplicationError from "../../errors/applicationError";
 import { User } from "../user/user.model";
 
-const getSingleStudent = async (uid: string): Promise<IStudent | null> => {
+const getSingleStudent = async (uid: string): Promise<IStudent> => {
    const result = await Student.findOne({ uid })
       .populate({
          path: "academicDepartment",
@@ -14,6 +14,9 @@ const getSingleStudent = async (uid: string): Promise<IStudent | null> => {
          },
       })
       .populate("admissionSemester");
+   if (!result) {
+      throw new ApplicationError(404, "Student not found");
+   }
    return result;
 };
 
@@ -27,6 +30,35 @@ const getAllStudents = async (): Promise<IStudent[]> => {
       })
       .populate("admissionSemester");
    return result;
+};
+
+const updateStudent = async (
+   uid: string,
+   payload: Partial<IStudent>,
+): Promise<IStudent | null> => {
+   const { name, guardian, localGuardian, ...remaining } = payload;
+   const modifiedPayload: Record<string, unknown> = { ...remaining };
+   if (name && Object.keys(name).length) {
+      for (const [key, value] of Object.entries(name)) {
+         modifiedPayload[`name.${key}`] = value;
+      }
+   }
+   if (guardian && Object.keys(guardian).length) {
+      for (const [key, value] of Object.entries(guardian)) {
+         modifiedPayload[`guardian.${key}`] = value;
+      }
+   }
+   if (localGuardian && Object.keys(localGuardian).length) {
+      for (const [key, value] of Object.entries(localGuardian)) {
+         modifiedPayload[`localGuardian.${key}`] = value;
+      }
+   }
+   const updatedStudent = await Student.findOneAndUpdate(
+      { uid },
+      { $set: modifiedPayload },
+      { new: true, runValidators: true },
+   );
+   return updatedStudent;
 };
 
 const deleteStudentFromDB = async (uid: string): Promise<IStudent | null> => {
@@ -65,4 +97,5 @@ export const StudentService = {
    getSingleStudent,
    getAllStudents,
    deleteStudentFromDB,
+   updateStudent,
 };

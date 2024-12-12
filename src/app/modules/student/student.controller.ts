@@ -23,8 +23,21 @@ const getAllStudents = asyncHandler(async (req, res) => {
    });
 });
 
+const updateStudent = asyncHandler(async (req, res) => {
+   const result = await StudentService.updateStudent(req.params.uid, {
+      ...req.body,
+   });
+   responder<IStudent | null>(res, {
+      statusCode: 201,
+      success: true,
+      message: "Student updated successfully",
+      data: result,
+   });
+});
+
 const deletedStudent = asyncHandler(async (req, res) => {
    const result = await StudentService.deleteStudentFromDB(req.params.uid);
+
    responder<IStudent | null>(res, {
       statusCode: 200,
       success: true,
@@ -37,4 +50,5 @@ export const StudentController = {
    getSingleStudent,
    getAllStudents,
    deletedStudent,
+   updateStudent,
 };
