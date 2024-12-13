@@ -1,4 +1,8 @@
 import { NextFunction, Request, Response } from "express";
+import { TDetails } from "../types/error";
+import { environment } from "../../config/environment";
+import { ZodError } from "zod";
+import zodErrorHandler from "../errors/zodError";
 
 const globalErrorHandler = (
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -7,13 +11,27 @@ const globalErrorHandler = (
    res: Response,
    _next: NextFunction,
 ) => {
-   const statusCode = error.statusCode || 500;
-   const message = error.message || "Something went wrong!";
+   let statusCode = error.statusCode || 500;
+   let message = error.message || "Something went wrong!";
+   let details: TDetails[] = [
+      {
+         path: "error",
+         message: "Something went wrong!",
+      },
+   ];
+
+   if (error instanceof ZodError) {
+      const simplifiedError = zodErrorHandler(error);
+      statusCode = simplifiedError.statusCode;
+      message = simplifiedError.message;
+      details = simplifiedError.details;
+   }
 
    res.status(statusCode).json({
       success: false,
       message,
-      error: error,
+      details,
+      stack: environment.env === "development" ? error.stack : "🥞",
    });
 };
 
