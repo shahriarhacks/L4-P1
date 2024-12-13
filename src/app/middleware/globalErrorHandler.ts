@@ -5,6 +5,7 @@ import { ZodError } from "zod";
 import zodErrorHandler from "../errors/zodError";
 import validationError from "../errors/validationError";
 import castErrorHandler from "../errors/castError";
+import duplicateKeyEntry from "../errors/duplicateKeyEntry";
 
 const globalErrorHandler = (
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,8 +38,12 @@ const globalErrorHandler = (
       statusCode = simplifiedError.statusCode;
       message = simplifiedError.message;
       details = simplifiedError.details;
+   } else if (error?.code === 11000) {
+      const simplifiedError = duplicateKeyEntry(error);
+      statusCode = simplifiedError.statusCode;
+      message = simplifiedError.message;
+      details = simplifiedError.details;
    }
-
    res.status(statusCode).json({
       success: false,
       message,

@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { TDetails, TGenericErrorResponse } from "../types/error";
-import exp from "constants";
 
 const castErrorHandler = (
    error: mongoose.Error.CastError,
