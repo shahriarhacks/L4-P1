@@ -7,11 +7,9 @@ let server: Server;
 
 async function runner() {
    try {
-      // Ensure MongoDB connection
-      await connectMongo();
-      console.log("🎉✨ Successfully connected to MongoDB");
-
-      // Start the server
+      await connectMongo().catch((error) =>
+         console.log({ what: `🤦‍♂️ MONGODB Connection Error`, why: error }),
+      );
       server = app.listen(environment.port, () => {
          console.log({
             what: `🎉✨ Server Running on PORT: ${environment.port}`,
@@ -19,10 +17,9 @@ async function runner() {
          });
       });
 
-      // Handle server-specific errors
       server.on("error", (error) => {
          console.log({
-            what: `🤦‍♂️ SERVER failed to start`,
+            what: `🤦‍♂️ SERVER failed to start for error`,
             why: error,
          });
          process.exit(1);
@@ -32,27 +29,23 @@ async function runner() {
          what: `🤦‍♂️ SERVER or DATABASE failed to start with some error!`,
          why: error,
       });
-      process.exit(1); // Exit the process if the server or database fails
+      process.exit(1);
    }
 }
 
-// Call the runner
 runner();
 
-// Handle unhandled promise rejections
-process.on("unhandledRejection", (reason) => {
-   console.log("💥 Unhandled Rejection detected! Shutting down...");
-   console.error(reason);
+process.on("unhandledRejection", () => {
+   console.log("Sheet unhandledRejection detected! Shutting down...");
    if (server) {
-      server.close(() => process.exit(1));
-   } else {
-      process.exit(1);
+      server.close(() => {
+         process.exit(1);
+      });
    }
+   process.exit(1);
 });
 
-// Handle uncaught exceptions
-process.on("uncaughtException", (error) => {
-   console.log("💥 Uncaught Exception detected! Shutting down...");
-   console.error(error);
+process.on("uncaughtException", () => {
+   console.log("Sheet uncaughtException detected! Shutting down...");
    process.exit(1);
 });
