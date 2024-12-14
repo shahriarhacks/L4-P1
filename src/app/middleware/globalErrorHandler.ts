@@ -6,7 +6,7 @@ import zodErrorHandler from "../errors/zodError";
 import validationError from "../errors/validationError";
 import castErrorHandler from "../errors/castError";
 import duplicateKeyEntry from "../errors/duplicateKeyEntry";
-import ApplicationError from "../errors/applicationError";
+import ApplicationError from "../errors/ApplicationError";
 
 const globalErrorHandler = (
    // eslint-disable-next-line @typescript-eslint/no-explicit-any

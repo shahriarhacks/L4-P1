@@ -1,4 +1,4 @@
-import ApplicationError from "../../errors/applicationError";
+import ApplicationError from "../../errors/ApplicationError";
 import { SemesterCodeMapper } from "./academicSemester.constant";
 import { IAcademicSemester } from "./academicSemester.interface";
 import { AcademicSemester } from "./academicSemester.model";

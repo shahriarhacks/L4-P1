@@ -6,7 +6,7 @@ import { Student } from "../student/student.model";
 import { IUser } from "./user.interface";
 import { User } from "./user.model";
 import { generateStudentId } from "./user.utils";
-import ApplicationError from "../../errors/applicationError";
+import ApplicationError from "../../errors/ApplicationError";
 
 const createStudentIntoDB = async (password: string, payload: IStudent) => {
    const userData: Partial<IUser> = {};

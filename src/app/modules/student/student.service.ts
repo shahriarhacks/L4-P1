@@ -2,7 +2,7 @@
 import { Student } from "./student.model";
 import { IStudent } from "./student.interface";
 import mongoose from "mongoose";
-import ApplicationError from "../../errors/applicationError";
+import ApplicationError from "../../errors/ApplicationError";
 import { User } from "../user/user.model";
 
 const getSingleStudent = async (uid: string): Promise<IStudent> => {

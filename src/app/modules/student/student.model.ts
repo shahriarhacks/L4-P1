@@ -5,7 +5,7 @@ import {
    IStudent,
    IUserName,
 } from "./student.interface";
-import ApplicationError from "../../errors/applicationError";
+import ApplicationError from "../../errors/ApplicationError";
 
 const bloodGroup = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
