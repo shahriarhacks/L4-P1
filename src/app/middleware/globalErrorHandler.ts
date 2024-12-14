@@ -6,6 +6,7 @@ import zodErrorHandler from "../errors/zodError";
 import validationError from "../errors/validationError";
 import castErrorHandler from "../errors/castError";
 import duplicateKeyEntry from "../errors/duplicateKeyEntry";
+import ApplicationError from "../errors/applicationError";
 
 const globalErrorHandler = (
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -43,7 +44,25 @@ const globalErrorHandler = (
       statusCode = simplifiedError.statusCode;
       message = simplifiedError.message;
       details = simplifiedError.details;
+   } else if (error instanceof ApplicationError) {
+      statusCode = error.statusCode;
+      message = error.message;
+      details = [
+         {
+            path: "error",
+            message: error.message,
+         },
+      ];
+   } else if (error instanceof Error) {
+      message = error.message;
+      details = [
+         {
+            path: "error",
+            message: error.message,
+         },
+      ];
    }
+
    res.status(statusCode).json({
       success: false,
       message,
