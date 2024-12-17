@@ -7,9 +7,9 @@ import {
 } from "./student.interface";
 import ApplicationError from "../../errors/ApplicationError";
 
-const bloodGroup = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+export const bloodGroup = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
-const userNameSchema = new Schema<IUserName>({
+export const userNameSchema = new Schema<IUserName>({
    firstName: {
       type: String,
       required: true,
@@ -108,7 +108,6 @@ const studentSchema = new Schema<IStudent>(
       emergencyContactNo: {
          type: String,
          required: true,
-         unique: true,
       },
       bloodGroup: {
          type: String,
