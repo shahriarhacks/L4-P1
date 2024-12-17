@@ -6,10 +6,16 @@ import { IStudent } from "../student/student.interface";
 import { Student } from "../student/student.model";
 import { IUser } from "./user.interface";
 import { User } from "./user.model";
-import { generateFacultyId, generateStudentId } from "./user.utils";
+import {
+   generateAdminId,
+   generateFacultyId,
+   generateStudentId,
+} from "./user.utils";
 import ApplicationError from "../../errors/ApplicationError";
 import { Faculty } from "../faculty/faculty.model";
 import { IFaculty } from "../faculty/faculty.interface";
+import { IAdmin } from "../admin/admin.interface";
+import { Admin } from "../admin/admin.model";
 
 const createStudentIntoDB = async (password: string, payload: IStudent) => {
    const userData: Partial<IUser> = {};
@@ -97,4 +103,47 @@ const createFacultyIntoDB = async (password: string, payload: IFaculty) => {
    }
 };
 
-export const UserService = { createStudentIntoDB, createFacultyIntoDB };
+const createAdminIntoDB = async (password: string, payload: IAdmin) => {
+   const userData: Partial<IUser> = {};
+   const session = await mongoose.startSession();
+
+   try {
+      session.startTransaction();
+      userData.uid = await generateAdminId();
+      userData.password = password || (environment.admin_def_pass as string);
+      userData.role = "admin";
+
+      const user = await User.create([userData], { session });
+      if (!user.length) {
+         throw new ApplicationError(
+            400,
+            "User not created, Something went wrong!",
+         );
+      }
+      payload.user = user[0]._id;
+      payload.uid = user[0].uid;
+
+      const createdAdmin = await Admin.create([payload], { session });
+      if (!createdAdmin.length) {
+         throw new ApplicationError(
+            400,
+            "Admin not created, Something went wrong!",
+         );
+      }
+
+      await session.commitTransaction();
+
+      return createdAdmin[0];
+   } catch (error: any) {
+      await session.abortTransaction();
+      throw new ApplicationError(400, error.message);
+   } finally {
+      await session.endSession();
+   }
+};
+
+export const UserService = {
+   createStudentIntoDB,
+   createFacultyIntoDB,
+   createAdminIntoDB,
+};

@@ -55,3 +55,24 @@ export const generateFacultyId = async () => {
    const facultyID = `F-${ongoingFacultyId}`;
    return facultyID;
 };
+
+const findLastAdminId = async () => {
+   // Find the last admin id in the database
+   const lastAdmin = await User.findOne({ role: "admin" }, { uid: 1, _id: 0 })
+      .sort({ createdAt: -1 })
+      .lean();
+
+   return lastAdmin?.uid ? lastAdmin.uid.substring(2) : undefined;
+};
+
+export const generateAdminId = async () => {
+   let currentId = (0).toString();
+   const lastAdminId = await findLastAdminId();
+
+   if (lastAdminId) {
+      currentId = lastAdminId;
+   }
+   const ongoingAdminId = (Number(currentId) + 1).toString().padStart(4, "0");
+   const adminID = `A-${ongoingAdminId}`;
+   return adminID;
+};

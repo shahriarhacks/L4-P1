@@ -3,6 +3,7 @@ import responder from "../../utils/responder";
 import { IStudent } from "../student/student.interface";
 import asyncHandler from "../../utils/asyncHandler";
 import { IFaculty } from "../faculty/faculty.interface";
+import { IAdmin } from "../admin/admin.interface";
 
 const createStudent = asyncHandler(async (req, res) => {
    const { password, ...student } = req.body;
@@ -28,4 +29,16 @@ const createFaculty = asyncHandler(async (req, res) => {
    });
 });
 
-export const UserController = { createStudent, createFaculty };
+const createAdmin = asyncHandler(async (req, res) => {
+   const { password, ...admin } = req.body;
+   const result = await UserService.createAdminIntoDB(password, admin);
+
+   responder<IAdmin>(res, {
+      statusCode: 201,
+      success: true,
+      message: "Admin created successfully",
+      data: result,
+   });
+});
+
+export const UserController = { createStudent, createFaculty, createAdmin };

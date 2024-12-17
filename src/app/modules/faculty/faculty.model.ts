@@ -73,6 +73,17 @@ const facultySchema = new Schema<IFaculty>(
    { timestamps: true },
 );
 
+// generating full name
+facultySchema.virtual("fullName").get(function () {
+   return (
+      this?.name?.firstName +
+      "" +
+      this?.name?.middleName +
+      "" +
+      this?.name?.lastName
+   );
+});
+
 // filter out deleted documents
 facultySchema.pre("find", function (next) {
    this.find({ isDeleted: { $ne: true } });

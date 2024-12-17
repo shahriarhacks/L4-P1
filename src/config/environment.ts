@@ -10,4 +10,5 @@ export const environment = {
    bcrypt_salt: process.env.BCRYPT_SALT_ROUNDS,
    student_def_pass: process.env.STUDENT_DEF_PASS,
    faculty_def_pass: process.env.FACULTY_DEF_PASS,
+   admin_def_pass: process.env.ADMIN_DEF_PASS,
 };
