@@ -157,6 +157,11 @@ const studentSchema = new Schema<IStudent>(
    },
 );
 
+//Virtual
+studentSchema.virtual("fullName").get(function () {
+   return `${this?.name?.firstName} ${this?.name?.middleName} ${this?.name?.lastName}`;
+});
+
 // Query Middleware
 studentSchema.pre("find", function (next) {
    this.find({ isDeleted: { $ne: true } });

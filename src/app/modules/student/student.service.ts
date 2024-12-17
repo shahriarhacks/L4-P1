@@ -4,6 +4,8 @@ import { IStudent } from "./student.interface";
 import mongoose from "mongoose";
 import ApplicationError from "../../errors/ApplicationError";
 import { User } from "../user/user.model";
+import QueryBuilder from "../../builder/QueryBuilder";
+import { searchAbleFields } from "./student.constant";
 
 const getSingleStudent = async (uid: string): Promise<IStudent> => {
    const result = await Student.findOne({ uid })
@@ -20,15 +22,35 @@ const getSingleStudent = async (uid: string): Promise<IStudent> => {
    return result;
 };
 
-const getAllStudents = async (): Promise<IStudent[]> => {
-   const result = await Student.find()
-      .populate({
-         path: "academicDepartment",
-         populate: {
-            path: "academicFaculty",
-         },
-      })
-      .populate("admissionSemester");
+const getAllStudents = async (
+   query: Record<string, unknown>,
+): Promise<IStudent[]> => {
+   // const result = await Student.find()
+   //    .populate({
+   //       path: "academicDepartment",
+   //       populate: {
+   //          path: "academicFaculty",
+   //       },
+   //    })
+   //    .populate("admissionSemester");
+   const studentQuery = new QueryBuilder(
+      Student.find()
+         .populate("admissionSemester")
+         .populate({
+            path: "academicDepartment",
+            populate: {
+               path: "academicFaculty",
+            },
+         }),
+      query,
+   )
+      .search(searchAbleFields)
+      .filter()
+      .sort()
+      .paginate()
+      .fields();
+
+   const result = await studentQuery.queryModel;
    return result;
 };
 
