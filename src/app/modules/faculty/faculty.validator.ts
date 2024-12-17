@@ -2,7 +2,7 @@ import { z } from "zod";
 import { createUserNameValidationSchema } from "../student/student.validator";
 import { BloodGroup, Gender } from "./faculty.constant";
 
-export const createFacultyValidationSchema = z.object({
+const createFacultyValidationSchema = z.object({
    body: z.object({
       designation: z.string(),
       name: createUserNameValidationSchema,
@@ -18,3 +18,5 @@ export const createFacultyValidationSchema = z.object({
       academicDepartment: z.string(),
    }),
 });
+
+export const facultyValidator = { createFacultyValidationSchema };

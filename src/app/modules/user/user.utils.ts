@@ -31,3 +31,27 @@ export const generateStudentId = async (payload: IAcademicSemester) => {
    const studentID = `${payload.year}${payload.code}${ongoingStudentId}`;
    return studentID;
 };
+
+const findLastFacultyId = async () => {
+   // Find the last faculty id in the database
+   const lastFaculty = await User.findOne(
+      { role: "faculty" },
+      { uid: 1, _id: 0 },
+   )
+      .sort({ createdAt: -1 })
+      .lean();
+
+   return lastFaculty?.uid ? lastFaculty.uid.substring(2) : undefined;
+};
+
+export const generateFacultyId = async () => {
+   let currentId = (0).toString();
+   const lastFacultyId = await findLastFacultyId();
+
+   if (lastFacultyId) {
+      currentId = lastFacultyId;
+   }
+   const ongoingFacultyId = (Number(currentId) + 1).toString().padStart(4, "0");
+   const facultyID = `F-${ongoingFacultyId}`;
+   return facultyID;
+};

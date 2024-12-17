@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from "mongoose";
 import { environment } from "../../../config/environment";
 import { AcademicSemester } from "../academicSemester/academicSemester.model";
@@ -5,8 +6,10 @@ import { IStudent } from "../student/student.interface";
 import { Student } from "../student/student.model";
 import { IUser } from "./user.interface";
 import { User } from "./user.model";
-import { generateStudentId } from "./user.utils";
+import { generateFacultyId, generateStudentId } from "./user.utils";
 import ApplicationError from "../../errors/ApplicationError";
+import { Faculty } from "../faculty/faculty.model";
+import { IFaculty } from "../faculty/faculty.interface";
 
 const createStudentIntoDB = async (password: string, payload: IStudent) => {
    const userData: Partial<IUser> = {};
@@ -21,7 +24,7 @@ const createStudentIntoDB = async (password: string, payload: IStudent) => {
    const session = await mongoose.startSession();
 
    try {
-      await session.startTransaction();
+      session.startTransaction();
       userData.uid = await generateStudentId(admissionSemester);
       userData.password = password || (environment.student_def_pass as string);
       userData.role = "student";
@@ -47,7 +50,6 @@ const createStudentIntoDB = async (password: string, payload: IStudent) => {
       await session.commitTransaction();
 
       return createdStudent[0];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
    } catch (error: any) {
       await session.abortTransaction();
       throw new ApplicationError(400, error.message);
@@ -56,4 +58,43 @@ const createStudentIntoDB = async (password: string, payload: IStudent) => {
    }
 };
 
-export const UserService = { createStudentIntoDB };
+const createFacultyIntoDB = async (password: string, payload: IFaculty) => {
+   const userData: Partial<IUser> = {};
+   const session = await mongoose.startSession();
+
+   try {
+      session.startTransaction();
+      userData.uid = await generateFacultyId();
+      userData.password = password || (environment.faculty_def_pass as string);
+      userData.role = "faculty";
+
+      const user = await User.create([userData], { session });
+      if (!user.length) {
+         throw new ApplicationError(
+            400,
+            "User not created, Something went wrong!",
+         );
+      }
+      payload.user = user[0]._id;
+      payload.uid = user[0].uid;
+
+      const createdFaculty = await Faculty.create([payload], { session });
+      if (!createdFaculty.length) {
+         throw new ApplicationError(
+            400,
+            "Faculty not created, Something went wrong!",
+         );
+      }
+
+      await session.commitTransaction();
+
+      return createdFaculty[0];
+   } catch (error: any) {
+      await session.abortTransaction();
+      throw new ApplicationError(400, error.message);
+   } finally {
+      await session.endSession();
+   }
+};
+
+export const UserService = { createStudentIntoDB, createFacultyIntoDB };

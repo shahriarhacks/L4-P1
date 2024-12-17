@@ -14,7 +14,7 @@ const getSingleStudent = asyncHandler(async (req, res) => {
 });
 
 const getAllStudents = asyncHandler(async (req, res) => {
-   const result = await StudentService.getAllStudents();
+   const result = await StudentService.getAllStudents(req.query);
    responder<IStudent[]>(res, {
       statusCode: 200,
       success: true,
